@@ -6,7 +6,7 @@ import com.sublime.core.network.model.NetworkMovie
 import com.sublime.core.network.model.NetworkPagedResponse
 import com.sublime.core.network.model.NetworkTvShow
 
-public interface TmdbNetworkDataSource {
+interface TmdbNetworkDataSource {
 
     suspend fun getMovies(
         category: MovieCategory,

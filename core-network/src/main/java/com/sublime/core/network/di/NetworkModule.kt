@@ -2,6 +2,7 @@ package com.sublime.core.network.di
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.sublime.core.network.BuildConfig
 import com.sublime.core.network.api.TmdbApiService
 import com.sublime.core.network.datasource.RetrofitTmdbNetworkDataSource
 import com.sublime.core.network.datasource.TmdbNetworkDataSource
@@ -15,6 +16,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -51,24 +53,16 @@ abstract class NetworkModule {
             authInterceptor: AuthInterceptor,
             loggingInterceptor: HttpLoggingInterceptor
         ): OkHttpClient {
-
-            return OkHttpClient.Builder()
+            val builder = OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
                 .addInterceptor(authInterceptor)
-                .addInterceptor(loggingInterceptor)
-                .build()
-        }
 
-        @Provides
-        @Singleton
-        fun provideRetrofit(
-            okHttpClient: OkHttpClient
-        ): Retrofit {
+            if (BuildConfig.DEBUG) {
+                builder.addInterceptor(loggingInterceptor)
+            }
 
-            return Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .client(okHttpClient)
-                .addConverterFactory(MoshiConverterFactory.create())
-                .build()
+            return builder.build()
         }
 
         @Provides
@@ -77,6 +71,19 @@ abstract class NetworkModule {
             Moshi.Builder()
                 .add(KotlinJsonAdapterFactory())
                 .build()
+
+        @Provides
+        @Singleton
+        fun provideRetrofit(
+            okHttpClient: OkHttpClient,
+            moshi: Moshi
+        ): Retrofit {
+            return Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(okHttpClient)
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
+                .build()
+        }
 
         @Provides
         @Singleton

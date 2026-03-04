@@ -1,9 +1,9 @@
 package com.sublime.core.model
 
-data class Movie(
+data class TvShow(
     val id: Int,
-    val title: String,
+    val name: String,
     val overview: String,
     val posterUrl: String?,
-    val releaseDate: String?
+    val firstAirDate: String?
 )

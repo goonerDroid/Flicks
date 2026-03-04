@@ -6,57 +6,68 @@ The goal of this project is to understand how large production Android apps are 
 
 ---
 
-## Features
+# Features
 
-- Browse movies
-- Add movies to watchlist
-- Mark movies as watched
-- Track watch history
-- Store user preferences
-- Local recommendation engine (future)
-
----
-
-## Tech Stack
-
-Language
-- Kotlin
-
-UI
-- Jetpack Compose
-
-Architecture
-- MVVM
-- Unidirectional Data Flow
-
-Concurrency
-- Kotlin Coroutines
-- Kotlin Flow
-
-Networking
-- Retrofit
-
-Database
-- Room
-
-Dependency Injection
-- Hilt
-
-Preferences
-- DataStore
-
-Navigation
-- Compose Navigation
-
-Image Loading
-- Coil
+• Browse movies
+• Add movies to a watchlist
+• Mark movies as watched
+• Track watch history
+• Store user preferences
+• Local movie recommendation engine *(planned)*
 
 ---
 
-## Architecture
+# Tech Stack
 
-The project follows a **modular architecture** inspired by the Now in Android sample.
-`
+### Language
+
+* Kotlin
+
+### UI
+
+* Jetpack Compose
+
+### Architecture
+
+* MVVM
+* Unidirectional Data Flow
+
+### Concurrency
+
+* Kotlin Coroutines
+* Kotlin Flow
+
+### Dependency Injection
+
+* Hilt
+
+### Networking
+
+* Retrofit
+
+### Database
+
+* Room
+
+### Preferences
+
+* DataStore
+
+### Navigation
+
+* Compose Navigation
+
+### Image Loading
+
+* Coil
+
+---
+
+# Architecture
+
+The project follows a **modular architecture** inspired by Google's **Now in Android** sample.
+
+```
 app
 │
 ├── feature-movies
@@ -69,56 +80,104 @@ app
 ├── core-network
 ├── core-model
 └── core-ui
-`
-
-### Data Flow
-
-Network → Repository → Database → Flow → ViewModel → UI
-
-The UI observes database flows rather than directly calling network APIs.
-
-This ensures the application works **offline-first**.
+```
 
 ---
 
-## Data Source
+# Module Dependency Direction
 
-Movie data is provided by **TMDB API**.
+Feature modules depend only on core modules.
+Core modules never depend on feature modules.
+
+```
+                app
+                 │
+        ┌────────┴────────┐
+        │                 │
+   feature-* modules   core-ui
+        │
+        ▼
+      core-data
+        │
+   ┌────┴────┐
+   ▼         ▼
+core-network core-database
+        │
+        ▼
+     core-model
+```
+
+This structure ensures:
+
+• clear separation of concerns
+• scalable feature development
+• easier testing and maintainability
+
+---
+
+# Data Flow
+
+The application follows an **offline-first data architecture**.
+
+```
+Network → Repository → Database → Flow → ViewModel → UI
+```
+
+### Flow Explanation
+
+1. Data is fetched from the **TMDB API**
+2. The **Repository** saves the data into **Room**
+3. The UI observes **database flows**
+4. The UI updates reactively whenever the database changes
+
+This allows the app to:
+
+• work offline
+• survive process death
+• avoid unnecessary network calls
+
+---
+
+# Data Source
+
+Movie data is provided by the **TMDB API**.
 
 https://www.themoviedb.org/
 
 ---
 
-## Future Work
+# Future Work
 
-- Recommendation engine using content-based filtering
-- Collaborative filtering experiments
-- Movie rating system
-- Offline recommendation model
-
----
-
-## Learning Goals
-
-This project focuses on learning:
-
-- Modular Android architecture
-- Clean separation of concerns
-- Reactive programming with Flow
-- Offline-first data strategy
-- Scalable feature modules
+• Local recommendation engine
+• Content-based movie recommendations
+• Collaborative filtering experiments
+• Movie rating system
+• Watch analytics and insights
 
 ---
 
-## Inspiration
+# Learning Goals
+
+This project focuses on learning modern Android engineering practices:
+
+• Modular architecture
+• Reactive programming with Kotlin Flow
+• Offline-first data strategies
+• Separation of domain, network, and database layers
+• Scalable feature modules
+
+---
+
+# Inspiration
 
 Architecture inspired by:
 
 **Now in Android**
+
 https://github.com/android/nowinandroid
 
 ---
 
-## License
+# License
 
 MIT

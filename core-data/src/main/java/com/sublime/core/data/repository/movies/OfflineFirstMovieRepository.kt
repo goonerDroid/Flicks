@@ -1,37 +1,47 @@
-package com.sublime.core.data.repository
+package com.sublime.core.data.repository.movies
 
 import com.sublime.core.data.mapper.asEntity
 import com.sublime.core.data.mapper.asExternalModel
+import com.sublime.core.data.mapper.asMovieCategory
 import com.sublime.core.database.dao.MovieDao
+import com.sublime.core.model.BrowseCategory
 import com.sublime.core.model.Movie
-import com.sublime.core.model.MovieCategory
 import com.sublime.core.network.datasource.TmdbNetworkDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DefaultMovieRepository @Inject constructor(
+class OfflineFirstMovieRepository @Inject constructor(
     private val movieDao: MovieDao,
     private val network: TmdbNetworkDataSource
 ) : MovieRepository {
 
     override fun observeMovies(
-        category: MovieCategory
+        category: BrowseCategory
     ): Flow<List<Movie>> {
-        return movieDao
-            .observeMoviesByCategory(category)
+
+        return movieDao.observeMoviesByCategory(
+            category.asMovieCategory()
+        )
             .map { entities ->
                 entities.map { it.asExternalModel() }
             }
+            .onStart {
+                refresh(category)
+            }
     }
 
-    override suspend fun fetchMovies(
-        category: MovieCategory,
-        page: Int
+    private suspend fun refresh(
+        category: BrowseCategory
     ) {
-        val response = network.getMovies(category, page)
+
+        val response = network.getMovies(
+            category = category.asMovieCategory(),
+            page = 1
+        )
 
         val entities = response.results.map {
             it.asEntity(category)

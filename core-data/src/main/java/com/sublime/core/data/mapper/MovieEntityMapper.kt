@@ -5,10 +5,10 @@ import com.sublime.core.model.Movie
 
 fun MovieEntity.asExternalModel(): Movie {
     return Movie(
-        id = id.toInt(),
+        id = id,
         title = title,
+        posterPath = posterPath,
         overview = overview ?: "",
-        posterUrl = posterPath,
-        releaseDate = releaseDate
+        rating = voteAverage
     )
 }

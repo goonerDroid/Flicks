@@ -1,7 +1,7 @@
 package com.sublime.core.database.converter
 
 import androidx.room.TypeConverter
-import com.sublime.core.database.model.MovieCategory
+import com.sublime.core.model.MovieCategory
 
 class MovieCategoryConverter {
 

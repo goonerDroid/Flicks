@@ -2,7 +2,7 @@ package com.sublime.core.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.sublime.core.database.model.MovieCategory
+import com.sublime.core.model.MovieCategory
 
 @Entity(tableName = "movies")
 data class MovieEntity(

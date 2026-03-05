@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.sublime.core.database.entity.MovieEntity
-import com.sublime.core.database.model.MovieCategory
+import com.sublime.core.model.MovieCategory
 import kotlinx.coroutines.flow.Flow
 
 @Dao

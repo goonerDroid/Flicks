@@ -8,8 +8,10 @@ import com.sublime.core.model.MediaType
 import com.sublime.feature.browse.model.BrowseSection
 import com.sublime.feature.browse.model.BrowseUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -20,59 +22,36 @@ class BrowseViewModel @Inject constructor(
     private val repository: BrowseRepository
 ) : ViewModel() {
 
-    private val popular =
-        repository.observeMedia(
-            category = BrowseCategory.POPULAR,
-            mediaType = MediaType.MOVIE
-        )
 
-    private val topRated =
-        repository.observeMedia(
-            category = BrowseCategory.TOP_RATED,
-            mediaType = MediaType.MOVIE
-        )
+    private val categories = listOf(
+        BrowseCategory.NOW_PLAYING,
+        BrowseCategory.POPULAR,
+        BrowseCategory.TOP_RATED,
+        BrowseCategory.UPCOMING
+    )
 
-    private val upcoming =
+    private val flows = categories.map { category ->
         repository.observeMedia(
-            category = BrowseCategory.UPCOMING,
+            category = category,
             mediaType = MediaType.MOVIE
         )
-
-    private val nowPlaying =
-        repository.observeMedia(
-            category = BrowseCategory.NOW_PLAYING,
-            mediaType = MediaType.MOVIE
-        )
+    }
 
     val uiState: StateFlow<BrowseUiState> =
-        combine(
-            popular,
-            topRated,
-            upcoming,
-            nowPlaying
-        ) { popularMovies, topRatedMovies, upcomingMovies, nowPlayingMovies ->
+        combine(flows) { mediaLists ->
 
-            BrowseUiState.Success(
-                sections = listOf(
-                    BrowseSection(
-                        category = BrowseCategory.NOW_PLAYING,
-                        media = nowPlayingMovies
-                    ),
-                    BrowseSection(
-                        category = BrowseCategory.POPULAR,
-                        media = popularMovies
-                    ),
-                    BrowseSection(
-                        category = BrowseCategory.TOP_RATED,
-                        media = topRatedMovies
-                    ),
-                    BrowseSection(
-                        category = BrowseCategory.UPCOMING,
-                        media = upcomingMovies
-                    )
+            val sections = categories.zip(mediaLists).map { (category, media) ->
+                BrowseSection(
+                    category = category,
+                    media = media
                 )
-            )
+            }
+
+            BrowseUiState.Success(sections) as BrowseUiState
         }
+            .catch {
+                emit(BrowseUiState.Error("Failed to load movies"))
+            }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
@@ -85,12 +64,12 @@ class BrowseViewModel @Inject constructor(
 
     private fun refresh() {
         viewModelScope.launch {
-
-            repository.syncMedia(BrowseCategory.POPULAR, MediaType.MOVIE)
-            repository.syncMedia(BrowseCategory.TOP_RATED, MediaType.MOVIE)
-            repository.syncMedia(BrowseCategory.UPCOMING, MediaType.MOVIE)
-            repository.syncMedia(BrowseCategory.NOW_PLAYING, MediaType.MOVIE)
-
+            coroutineScope {
+                launch { repository.syncMedia(BrowseCategory.POPULAR, MediaType.MOVIE) }
+                launch { repository.syncMedia(BrowseCategory.TOP_RATED, MediaType.MOVIE) }
+                launch { repository.syncMedia(BrowseCategory.UPCOMING, MediaType.MOVIE) }
+                launch { repository.syncMedia(BrowseCategory.NOW_PLAYING, MediaType.MOVIE) }
+            }
         }
     }
 }

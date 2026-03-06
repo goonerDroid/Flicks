@@ -40,7 +40,7 @@ fun BrowseScreen(
         }
 
         is BrowseUiState.Error -> {
-            Text("Something went wrong")
+            Text((uiState as BrowseUiState.Error).message)
         }
     }
 }

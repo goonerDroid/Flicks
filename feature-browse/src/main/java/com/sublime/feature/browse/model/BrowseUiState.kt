@@ -9,6 +9,6 @@ sealed interface BrowseUiState {
     ) : BrowseUiState
 
     data class Error(
-        val throwable: Throwable
+        val message: String
     ) : BrowseUiState
 }

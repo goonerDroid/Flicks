@@ -1,11 +1,13 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
     alias(libs.plugins.compose.compiler)
 }
 
 android {
-    namespace = "com.sublime.core.ui"
+    namespace = "com.sublime.feature.browse"
     compileSdk = 36
 
     defaultConfig {
@@ -17,10 +19,6 @@ android {
 
     buildFeatures {
         compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14"
     }
 
     buildTypes {
@@ -42,15 +40,10 @@ android {
 }
 
 dependencies {
-
-    // Compose BOM
-    api(platform(libs.androidx.compose.bom))
-
-    api(libs.androidx.compose.ui)
-    api(libs.androidx.compose.foundation)
-    api(libs.androidx.compose.material3)
-
-    api(libs.androidx.lifecycle.runtime.compose)
-
-    api(libs.coil.compose)
+    implementation(project(":core-model"))
+    implementation(project(":core-data"))
+    implementation(project(":core-ui"))
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.hilt.android)
+    ksp(libs.dagger.hilt.compiler)
 }

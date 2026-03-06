@@ -9,7 +9,6 @@ import com.sublime.core.model.Movie
 import com.sublime.core.network.datasource.TmdbNetworkDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -29,15 +28,9 @@ class OfflineFirstMovieRepository @Inject constructor(
             .map { entities ->
                 entities.map { it.asExternalModel() }
             }
-            .onStart {
-                refresh(category)
-            }
     }
 
-    private suspend fun refresh(
-        category: BrowseCategory
-    ) {
-
+    override suspend fun syncMovies(category: BrowseCategory) {
         val response = network.getMovies(
             category = category.asMovieCategory(),
             page = 1

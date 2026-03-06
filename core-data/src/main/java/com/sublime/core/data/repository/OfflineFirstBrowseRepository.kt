@@ -5,6 +5,7 @@ import com.sublime.core.model.BrowseCategory
 import com.sublime.core.model.Media
 import com.sublime.core.model.MediaType
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import javax.inject.Inject
 
 class OfflineFirstBrowseRepository @Inject constructor(
@@ -22,7 +23,7 @@ class OfflineFirstBrowseRepository @Inject constructor(
                 movieRepository.observeMovies(category)
 
             MediaType.TV ->
-                movieRepository.observeMovies(category)//TODO this will change to tvrepository
+                emptyFlow() // TV support later
         }
     }
 
@@ -37,7 +38,7 @@ class OfflineFirstBrowseRepository @Inject constructor(
                 movieRepository.syncMovies(category)
 
             MediaType.TV ->
-                movieRepository.observeMovies(category) //TODO this will change to tvrepository
+                Unit // TV support later
         }
     }
 }

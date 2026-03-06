@@ -25,6 +25,7 @@ fun BrowseCategory.asMovieCategory(): MovieCategory {
     return when (this) {
         BrowseCategory.POPULAR -> MovieCategory.POPULAR
         BrowseCategory.TOP_RATED -> MovieCategory.TOP_RATED
-        BrowseCategory.TRENDING -> MovieCategory.POPULAR //TODO Added popular as of now, change this later
+        BrowseCategory.UPCOMING -> MovieCategory.UPCOMING
+        BrowseCategory.NOW_PLAYING -> MovieCategory.NOW_PLAYING
     }
 }

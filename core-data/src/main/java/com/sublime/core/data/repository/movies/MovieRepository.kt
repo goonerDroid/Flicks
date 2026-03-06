@@ -9,4 +9,8 @@ interface MovieRepository {
     fun observeMovies(
         category: BrowseCategory
     ): Flow<List<Movie>>
+
+    suspend fun syncMovies(
+        category: BrowseCategory
+    )
 }

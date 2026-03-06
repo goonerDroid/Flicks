@@ -1,4 +1,5 @@
 import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -56,7 +57,7 @@ android {
 
 dependencies {
     implementation(project(":core-model"))
-    implementation(libs.retrofit)
+    api(libs.retrofit)
     implementation(libs.converter.moshi)
     ksp(libs.moshi.kotlin.codegen)
     implementation(libs.moshi.kotlin)

@@ -2,7 +2,7 @@ package com.sublime.feature.browse
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sublime.core.data.repository.BrowseRepository
+import com.sublime.core.data.repository.MediaRepository
 import com.sublime.core.model.BrowseCategory
 import com.sublime.core.model.MediaType
 import com.sublime.feature.browse.model.BrowseSection
@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BrowseViewModel @Inject constructor(
-    private val repository: BrowseRepository
+    private val repository: MediaRepository
 ) : ViewModel() {
 
 

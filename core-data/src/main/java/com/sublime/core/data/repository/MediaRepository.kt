@@ -5,7 +5,7 @@ import com.sublime.core.model.Media
 import com.sublime.core.model.MediaType
 import kotlinx.coroutines.flow.Flow
 
-interface BrowseRepository {
+interface MediaRepository {
 
     fun observeMedia(
         category: BrowseCategory,

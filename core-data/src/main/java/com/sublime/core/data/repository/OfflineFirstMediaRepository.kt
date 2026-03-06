@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import javax.inject.Inject
 
-class OfflineFirstBrowseRepository @Inject constructor(
+class OfflineFirstMediaRepository @Inject constructor(
     private val movieRepository: MovieRepository,
-) : BrowseRepository {
+) : MediaRepository {
 
     override fun observeMedia(
         category: BrowseCategory,

@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface MovieDao {
 
-    @Query("SELECT * FROM movies WHERE category = :category ORDER BY popularity DESC")
+    @Query("SELECT * FROM movies WHERE category = :category")
     fun observeMoviesByCategory(
         category: BrowseCategory
     ): Flow<List<MovieEntity>>

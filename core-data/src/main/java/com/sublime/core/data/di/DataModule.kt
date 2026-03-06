@@ -1,7 +1,7 @@
 package com.sublime.core.data.di
 
-import com.sublime.core.data.repository.BrowseRepository
-import com.sublime.core.data.repository.OfflineFirstBrowseRepository
+import com.sublime.core.data.repository.MediaRepository
+import com.sublime.core.data.repository.OfflineFirstMediaRepository
 import com.sublime.core.data.repository.movies.MovieRepository
 import com.sublime.core.data.repository.movies.OfflineFirstMovieRepository
 import dagger.Binds
@@ -19,7 +19,7 @@ abstract class DataModule {
     ): MovieRepository
 
     @Binds
-    abstract fun bindBrowseRepository(
-        impl: OfflineFirstBrowseRepository
-    ): BrowseRepository
+    abstract fun bindMediaRepository(
+        impl: OfflineFirstMediaRepository
+    ): MediaRepository
 }

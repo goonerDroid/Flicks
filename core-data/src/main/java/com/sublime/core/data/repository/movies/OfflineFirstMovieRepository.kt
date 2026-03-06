@@ -20,52 +20,43 @@ import javax.inject.Singleton
 @Singleton
 class OfflineFirstMovieRepository @Inject constructor(
     private val movieDao: MovieDao,
-    private val network: TmdbNetworkDataSource,
-    @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher
+    private val network: TmdbNetworkDataSource
 ) : MovieRepository {
 
     override fun observeMovies(
         category: BrowseCategory
     ): Flow<List<Movie>> {
 
-        return movieDao.observeMoviesByCategory(
-            category
-        )
+        return movieDao.observeMoviesByCategory(category)
             .map { entities ->
                 entities.map { it.asExternalModel() }
             }
     }
 
     override suspend fun syncMovies(category: BrowseCategory) {
-        withContext(ioDispatcher) {
-            try {
-                val response = network.getMovies(
-                    category = category,
-                    page = 1
-                )
+        try {
+            val response = network.getMovies(
+                category = category,
+                page = 1
+            )
 
-                val entities = response.results.map {
-                    it.asEntity(category)
-                }
-
-                movieDao.replaceMovies(
-                    category = category,
-                    movies = entities
-                )
-
-            } catch (e: IOException) {
-                Log.e(
-                    OfflineFirstMovieRepository::class.java.simpleName,
-                    "Network error while syncing movies",
-                    e
-                )
-            } catch (e: HttpException) {
-                Log.e(
-                    OfflineFirstMovieRepository::class.java.simpleName,
-                    "API error while syncing movies",
-                    e
-                )
+            val entities = response.results.map {
+                it.asEntity(category)
             }
+
+            movieDao.replaceMovies(
+                category = category,
+                movies = entities
+            )
+
+        } catch (e: IOException) {
+            Log.e(TAG, "Network error while syncing movies", e)
+        } catch (e: HttpException) {
+            Log.e(TAG, "API error while syncing movies", e)
         }
+    }
+
+    companion object {
+        private const val TAG = "OfflineFirstMovieRepository"
     }
 }

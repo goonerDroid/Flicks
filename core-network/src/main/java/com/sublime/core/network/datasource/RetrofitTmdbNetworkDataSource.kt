@@ -1,6 +1,6 @@
 package com.sublime.core.network.datasource
 
-import com.sublime.core.model.MovieCategory
+import com.sublime.core.model.BrowseCategory
 import com.sublime.core.model.TvCategory
 import com.sublime.core.network.api.TmdbApiService
 import com.sublime.core.network.model.NetworkMovie
@@ -15,20 +15,15 @@ class RetrofitTmdbNetworkDataSource @Inject constructor(
 ) : TmdbNetworkDataSource {
 
     override suspend fun getMovies(
-        category: MovieCategory,
+        category: BrowseCategory,
         page: Int
-    ): NetworkPagedResponse<NetworkMovie> {
-
-        return when (category) {
-            MovieCategory.POPULAR -> api.getPopularMovies(page)
-
-            MovieCategory.TOP_RATED -> api.getTopRatedMovies(page)
-
-            MovieCategory.UPCOMING -> api.getUpcomingMovies(page)
-
-            MovieCategory.NOW_PLAYING -> api.getNowPlayingMovies(page)
+    ): NetworkPagedResponse<NetworkMovie> =
+        when (category) {
+            BrowseCategory.POPULAR -> api.getPopularMovies(page)
+            BrowseCategory.TOP_RATED -> api.getTopRatedMovies(page)
+            BrowseCategory.UPCOMING -> api.getUpcomingMovies(page)
+            BrowseCategory.NOW_PLAYING -> api.getNowPlayingMovies(page)
         }
-    }
 
     override suspend fun getTvShows(
         category: TvCategory,

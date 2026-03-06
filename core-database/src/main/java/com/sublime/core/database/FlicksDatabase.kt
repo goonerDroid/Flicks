@@ -3,7 +3,7 @@ package com.sublime.core.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.sublime.core.database.converter.MovieCategoryConverter
+import com.sublime.core.database.converter.BrowseCategoryConverter
 import com.sublime.core.database.dao.MovieDao
 import com.sublime.core.database.dao.WatchedDao
 import com.sublime.core.database.dao.WatchlistDao
@@ -20,7 +20,7 @@ import com.sublime.core.database.entity.WatchlistEntity
     version = 1,
     exportSchema = false
 )
-@TypeConverters(MovieCategoryConverter::class)
+@TypeConverters(BrowseCategoryConverter::class)
 abstract class FlicksDatabase : RoomDatabase() {
 
     abstract fun movieDao(): MovieDao

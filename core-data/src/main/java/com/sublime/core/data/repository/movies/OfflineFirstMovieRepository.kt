@@ -2,7 +2,6 @@ package com.sublime.core.data.repository.movies
 
 import com.sublime.core.data.mapper.asEntity
 import com.sublime.core.data.mapper.asExternalModel
-import com.sublime.core.data.mapper.asMovieCategory
 import com.sublime.core.database.dao.MovieDao
 import com.sublime.core.model.BrowseCategory
 import com.sublime.core.model.Movie
@@ -23,7 +22,7 @@ class OfflineFirstMovieRepository @Inject constructor(
     ): Flow<List<Movie>> {
 
         return movieDao.observeMoviesByCategory(
-            category.asMovieCategory()
+            category
         )
             .map { entities ->
                 entities.map { it.asExternalModel() }
@@ -32,7 +31,7 @@ class OfflineFirstMovieRepository @Inject constructor(
 
     override suspend fun syncMovies(category: BrowseCategory) {
         val response = network.getMovies(
-            category = category.asMovieCategory(),
+            category = category,
             page = 1
         )
 
@@ -40,6 +39,9 @@ class OfflineFirstMovieRepository @Inject constructor(
             it.asEntity(category)
         }
 
-        movieDao.insertMovies(entities)
+        movieDao.replaceMovies(
+            category = category,
+            movies = entities
+        )
     }
 }

@@ -1,6 +1,6 @@
 package com.sublime.core.network.datasource
 
-import com.sublime.core.model.MovieCategory
+import com.sublime.core.model.BrowseCategory
 import com.sublime.core.model.TvCategory
 import com.sublime.core.network.model.NetworkMovie
 import com.sublime.core.network.model.NetworkPagedResponse
@@ -9,7 +9,7 @@ import com.sublime.core.network.model.NetworkTvShow
 interface TmdbNetworkDataSource {
 
     suspend fun getMovies(
-        category: MovieCategory,
+        category: BrowseCategory,
         page: Int
     ): NetworkPagedResponse<NetworkMovie>
 

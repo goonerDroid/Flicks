@@ -2,7 +2,6 @@ package com.sublime.core.data.mapper
 
 import com.sublime.core.database.entity.MovieEntity
 import com.sublime.core.model.BrowseCategory
-import com.sublime.core.model.MovieCategory
 import com.sublime.core.network.model.NetworkMovie
 
 fun NetworkMovie.asEntity(
@@ -17,15 +16,6 @@ fun NetworkMovie.asEntity(
         releaseDate = releaseDate,
         popularity = popularity,
         voteAverage = voteAverage,
-        category = category.asMovieCategory()
+        category = category
     )
-}
-
-fun BrowseCategory.asMovieCategory(): MovieCategory {
-    return when (this) {
-        BrowseCategory.POPULAR -> MovieCategory.POPULAR
-        BrowseCategory.TOP_RATED -> MovieCategory.TOP_RATED
-        BrowseCategory.UPCOMING -> MovieCategory.UPCOMING
-        BrowseCategory.NOW_PLAYING -> MovieCategory.NOW_PLAYING
-    }
 }
